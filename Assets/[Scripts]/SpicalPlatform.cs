@@ -17,11 +17,20 @@ public class SpicalPlatform : MonoBehaviour
     private Collider2D collider;
     private bool isShrinkable;
     
+    [Header("Audio")]
+    public List<AudioClip> soundclips;
+    public AudioSource audioSource;
+    private bool expandcliplaying;
+    private bool shrinclipplaying;
+
     // Start is called before the first frame update
     void Start()
     {
         collider = GetComponent<Collider2D>();
         isShrinkable = false;
+        
+        expandcliplaying = false;
+        shrinclipplaying = false;
     }
 
     // Update is called once per frame
@@ -32,30 +41,41 @@ public class SpicalPlatform : MonoBehaviour
     }
 
     IEnumerator Shrink()
-    {
+    { 
         if (isShrinkable)
         {
-            while (temp.x > 0)
+            if (shrinclipplaying)
             {
-                temp = transform.localScale;
-                temp.x -= 0.001f * shrinkspeed * Time.deltaTime;
-                temp.y -= 0.001f * shrinkspeed * Time.deltaTime;
-                transform.localScale = temp;
-                yield return null;
+                PlayClip(PlatformState.SHRINKING);
             }
+           while (temp.x > 0)
+           {
+            temp = transform.localScale;
+            temp.x -= 0.001f * shrinkspeed * Time.deltaTime;
+            temp.y -= 0.001f * shrinkspeed * Time.deltaTime;
+            transform.localScale = temp;
+            yield return null;
+           }
         }
     }
 
     IEnumerator Expand()
     {
-        yield return new WaitForSecondsRealtime(0.5f);
-        while (temp.x < 1)
+        if (!isShrinkable)
         {
-            temp = transform.localScale;
-            temp.x += 0.002f * expandspeed * Time.deltaTime;
-            temp.y += 0.002f * expandspeed * Time.deltaTime;
-            transform.localScale = temp;
-            yield return null;
+            yield return new WaitForSecondsRealtime(0.5f);
+            if (expandcliplaying)
+            {
+                PlayClip(PlatformState.EXPANDING);
+            }
+            while (temp.x < 1)
+            {
+                temp = transform.localScale;
+                temp.x += 0.002f * expandspeed * Time.deltaTime;
+                temp.y += 0.002f * expandspeed * Time.deltaTime;
+                transform.localScale = temp;
+                yield return null;
+            }
         }
     }
 
@@ -92,6 +112,7 @@ public class SpicalPlatform : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             isShrinkable = true;
+            shrinclipplaying = true;
         }
     }
 
@@ -100,7 +121,38 @@ public class SpicalPlatform : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             isShrinkable = false;
+            expandcliplaying = true;
         }
       
+    }
+
+    private void PlayClip(PlatformState state)
+    {
+        switch (state)
+        {
+            case PlatformState.EXPANDING:
+                expandcliplaying = true;
+                shrinclipplaying = false;
+                audioSource.clip = soundclips[0];
+                if (!audioSource.isPlaying)
+                {
+                    audioSource.Play();
+                    expandcliplaying = false;
+                    shrinclipplaying = false;
+                }
+                
+                break;
+            case PlatformState.SHRINKING:
+                expandcliplaying = false;
+                shrinclipplaying = true;
+                audioSource.clip = soundclips[1];
+                if (!audioSource.isPlaying)
+                { 
+                    audioSource.Play();
+                    expandcliplaying = false;
+                    shrinclipplaying = false;
+                }
+                break;
+        }
     }
 }
