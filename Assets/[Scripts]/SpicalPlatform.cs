@@ -22,7 +22,6 @@ public class SpicalPlatform : MonoBehaviour
     public AudioSource audioSource;
     private bool expandcliplaying;
     private bool shrinclipplaying;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -32,19 +31,15 @@ public class SpicalPlatform : MonoBehaviour
         expandcliplaying = false;
         shrinclipplaying = false;
     }
-
     // Update is called once per frame
     void Update()
     {
         ShrinkingPlatform();
         ExpandingPlatform();
     }
-
     IEnumerator Shrink()
-    { 
-        if (isShrinkable)
-        {
-            if (shrinclipplaying)
+    {
+        if (shrinclipplaying)
             {
                 PlayClip(PlatformState.SHRINKING);
             }
@@ -56,14 +51,10 @@ public class SpicalPlatform : MonoBehaviour
             transform.localScale = temp;
             yield return null;
            }
-        }
     }
-
     IEnumerator Expand()
     {
-        if (!isShrinkable)
-        {
-            yield return new WaitForSecondsRealtime(0.5f);
+        yield return new WaitForSecondsRealtime(0.5f);
             if (expandcliplaying)
             {
                 PlayClip(PlatformState.EXPANDING);
@@ -76,18 +67,14 @@ public class SpicalPlatform : MonoBehaviour
                 transform.localScale = temp;
                 yield return null;
             }
-        }
     }
-
     private void ShrinkingPlatform()
     {
         if (isShrinkable)
         {
             StartCoroutine(Shrink());
         }
-        
     }
-
     private void ExpandingPlatform()
     {
         if (!isShrinkable)
@@ -96,17 +83,6 @@ public class SpicalPlatform : MonoBehaviour
         }
         
     }
-    
-    /*private void OnCollisionStay2D(Collision2D other)
-    {
-        if (other.gameObject.CompareTag("Player"))
-        {
-            isShrinkable = true;
-            Debug.Log("Stay");
-            ShrinkingPlatform();
-        }
-    }*/
-
     private void OnCollisionEnter2D(Collision2D other)
     {
         if (other.gameObject.CompareTag("Player"))
@@ -115,7 +91,6 @@ public class SpicalPlatform : MonoBehaviour
             shrinclipplaying = true;
         }
     }
-
     private void OnCollisionExit2D(Collision2D other)
     {
         if (other.gameObject.CompareTag("Player"))
@@ -125,7 +100,6 @@ public class SpicalPlatform : MonoBehaviour
         }
       
     }
-
     private void PlayClip(PlatformState state)
     {
         switch (state)
