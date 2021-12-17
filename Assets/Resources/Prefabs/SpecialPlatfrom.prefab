@@ -557,6 +557,9 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 02db0f2c850ea2149b106f70ec34a9e2, type: 3}
   - {fileID: 8300000, guid: 1a5c586d3bc94b740942fc48b583faee, type: 3}
   audioSource: {fileID: 3756517945968800973}
+  floatSpeed: 0.5
+  floatDistance: 0.1
+  direction: 1
 --- !u!61 &3756517945968800970
 BoxCollider2D:
   m_ObjectHideFlags: 0

@@ -1,20 +1,21 @@
+/// SpicalPlatform.cs
+/// Jing Yuan Cheng 101257237
+/// Special platform controller (sorry for the the missing "e" in the script name)
+/// controls the shrink and expand of the platform 
+/// also controls the floating behaviours of the platform
+/// Last editedL: Dec 17 2021
+/// Version 1.0
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-
-public enum PlatformState
-{
-    EXPANDING,
-    SHRINKING,
-}
 public class SpicalPlatform : MonoBehaviour
 {
+    [Header("Shrinking Platform")]
     public float shrinkspeed;
     public float expandspeed;
     private Vector3 temp;
-    private Collider2D collider;
     private bool isShrinkable;
     
     [Header("Audio")]
@@ -22,10 +23,17 @@ public class SpicalPlatform : MonoBehaviour
     public AudioSource audioSource;
     private bool expandcliplaying;
     private bool shrinclipplaying;
+
+    [Header("Floating Platform")]
+    public float floatSpeed;
+    public float floatDistance;
+    public float direction = 1;
+    private float distance;
+    
+    
     // Start is called before the first frame update
     void Start()
     {
-        collider = GetComponent<Collider2D>();
         isShrinkable = false;
         
         expandcliplaying = false;
@@ -34,14 +42,27 @@ public class SpicalPlatform : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        floatingPlatform();
         ShrinkingPlatform();
         ExpandingPlatform();
+    }
+
+    private void floatingPlatform()
+    {
+        float yOffset = transform.position.y + direction * floatSpeed * Time.deltaTime;
+        transform.position = new Vector3(transform.position.x, yOffset, transform.position.z);
+        distance += floatSpeed * Time.deltaTime;
+        if (distance>=floatDistance)
+        {
+            distance = 0;
+            direction = -direction;
+        }
     }
     IEnumerator Shrink()
     {
         if (shrinclipplaying)
             {
-                PlayClip(PlatformState.SHRINKING);
+                PlayClip(SoundClip.SHRINKING);
             }
            while (temp.x > 0)
            {
@@ -54,10 +75,10 @@ public class SpicalPlatform : MonoBehaviour
     }
     IEnumerator Expand()
     {
-        yield return new WaitForSecondsRealtime(0.5f);
+        yield return new WaitForSecondsRealtime(0.2f);
             if (expandcliplaying)
             {
-                PlayClip(PlatformState.EXPANDING);
+                PlayClip(SoundClip.EXPANDING);
             }
             while (temp.x < 1)
             {
@@ -100,11 +121,11 @@ public class SpicalPlatform : MonoBehaviour
         }
       
     }
-    private void PlayClip(PlatformState state)
+    private void PlayClip(SoundClip clip)
     {
-        switch (state)
+        switch (clip)
         {
-            case PlatformState.EXPANDING:
+            case SoundClip.EXPANDING:
                 expandcliplaying = true;
                 shrinclipplaying = false;
                 audioSource.clip = soundclips[0];
@@ -114,9 +135,8 @@ public class SpicalPlatform : MonoBehaviour
                     expandcliplaying = false;
                     shrinclipplaying = false;
                 }
-                
                 break;
-            case PlatformState.SHRINKING:
+            case SoundClip.SHRINKING:
                 expandcliplaying = false;
                 shrinclipplaying = true;
                 audioSource.clip = soundclips[1];
@@ -129,4 +149,10 @@ public class SpicalPlatform : MonoBehaviour
                 break;
         }
     }
+}
+
+public enum SoundClip
+{
+    EXPANDING,
+    SHRINKING,
 }
