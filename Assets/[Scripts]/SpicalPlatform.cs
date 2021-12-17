@@ -1,58 +1,106 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+
+public enum PlatformState
+{
+    EXPANDING,
+    SHRINKING,
+}
 public class SpicalPlatform : MonoBehaviour
 {
-    public float shrinkspeed = 1;
+    public float shrinkspeed;
+    public float expandspeed;
     private Vector3 temp;
-    public float period;
-    public float nextActionTime;
-    public LayerMask playermask;
-    public Collider2D collider;
+    private Collider2D collider;
+    private bool isShrinkable;
     
     // Start is called before the first frame update
     void Start()
     {
         collider = GetComponent<Collider2D>();
+        isShrinkable = false;
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
-        Expand();
-
-        Shrink();
+        ShrinkingPlatform();
+        ExpandingPlatform();
     }
 
-    private void Shrink()
+    IEnumerator Shrink()
     {
-        if (Input.GetKey(KeyCode.DownArrow) && temp.x > 0)
+        if (isShrinkable)
+        {
+            while (temp.x > 0)
+            {
+                temp = transform.localScale;
+                temp.x -= 0.001f * shrinkspeed * Time.deltaTime;
+                temp.y -= 0.001f * shrinkspeed * Time.deltaTime;
+                transform.localScale = temp;
+                yield return null;
+            }
+        }
+    }
+
+    IEnumerator Expand()
+    {
+        yield return new WaitForSecondsRealtime(0.5f);
+        while (temp.x < 1)
         {
             temp = transform.localScale;
-            temp.x -= 0.1f * shrinkspeed;
-            temp.y -= 0.1f * shrinkspeed;
+            temp.x += 0.002f * expandspeed * Time.deltaTime;
+            temp.y += 0.002f * expandspeed * Time.deltaTime;
             transform.localScale = temp;
+            yield return null;
         }
     }
 
-    private void Expand()
+    private void ShrinkingPlatform()
     {
-        if (Input.GetKey(KeyCode.UpArrow) && temp.x < 1)
+        if (isShrinkable)
         {
-            nextActionTime += period;
-            temp = transform.localScale;
-            temp.x += 0.1f * shrinkspeed;
-            temp.y += 0.1f * shrinkspeed;
-            transform.localScale = temp;
+            StartCoroutine(Shrink());
+        }
+        
+    }
+
+    private void ExpandingPlatform()
+    {
+        if (!isShrinkable)
+        {
+            StartCoroutine(Expand());
+        }
+        
+    }
+    
+    /*private void OnCollisionStay2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            isShrinkable = true;
+            Debug.Log("Stay");
+            ShrinkingPlatform();
+        }
+    }*/
+
+    private void OnCollisionEnter2D(Collision2D other)
+    {
+        if (other.gameObject.CompareTag("Player"))
+        {
+            isShrinkable = true;
         }
     }
 
-    public void CheckCollider()
+    private void OnCollisionExit2D(Collision2D other)
     {
-        while (temp.x>0.2)
+        if (other.gameObject.CompareTag("Player"))
         {
-            collider.enabled = !collider.enabled;
+            isShrinkable = false;
         }
+      
     }
 }

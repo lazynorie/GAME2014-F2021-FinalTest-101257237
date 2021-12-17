@@ -3868,7 +3868,7 @@ BoxCollider2D:
   m_IsTrigger: 0
   m_UsedByEffector: 0
   m_UsedByComposite: 0
-  m_Offset: {x: 1.5051923, y: 0.5003748}
+  m_Offset: {x: 1.5051923, y: 0.51746297}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0, y: 0}
@@ -3879,7 +3879,7 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 4.0103846, y: 2.0007496}
+  m_Size: {x: 4.0103846, y: 2.034926}
   m_EdgeRadius: 0
 --- !u!114 &522734043
 MonoBehaviour:
@@ -3893,12 +3893,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 554962e71671f7e4e9c3e966f4d662ed, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  shrinkspeed: 1
+  transformspeed: 1
   period: 2
   nextActionTime: 0
   playermask:
     serializedVersion: 2
-    m_Bits: 0
+    m_Bits: 4096
   collider: {fileID: 0}
 --- !u!4 &522734044
 Transform:
@@ -3908,7 +3908,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 522734041}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -4.275, y: -0.926, z: 0}
+  m_LocalPosition: {x: -13.66, y: -3.52, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 831121449}
@@ -22684,7 +22684,7 @@ MonoBehaviour:
     ModeOverride: 0
     LensShift: {x: 0, y: 0}
     GateFit: 2
-    m_SensorSize: {x: 1.6001492, y: 1}
+    m_SensorSize: {x: 2.1111112, y: 1}
   m_Transitions:
     m_BlendHint: 0
     m_InheritPosition: 0
